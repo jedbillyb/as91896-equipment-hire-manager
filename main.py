@@ -3,11 +3,7 @@ from concurrent.interpreters import create
 from tkinter import *
 from tkinter.messagebox import showerror
 from turtle import left
-from tkcalendar import Calendar, DateEntry
-
-# quit function ----------------------------------------------------------------
-def quit():
-    main_window.destroy()  
+from tkcalendar import Calendar, DateEntry\
 
 # create lists to store data ---------------------------------------------------
 first_name_list = []
@@ -20,22 +16,9 @@ month_hired_from_list = []
 year_hired_from_list = []
 date_returned_list = []
 
-# main function ----------------------------------------------------------------
-def main():
-    # create buttons and labels ------------------------------------------------
-    Button(main_window, text="Quit", command=quit).grid(row=0, column=0, sticky=W)
-    Button(main_window, text="Calculate", command=calculate, padx=150, pady=5).grid(row=8, column=0, columnspan=2)
-    Label(main_window, text="First Name:").grid(row=1, column=0, sticky=W)
-    Label(main_window, text="Last Name:").grid(row=2, column=0, sticky=W)
-    Label(main_window, text="Receipt number:").grid(row=3, column=0, sticky=W)
-    Label(main_window, text="Item Hired:").grid(row=4, column=0, sticky=W)
-    Label(main_window, text="Number Hired:").grid(row=5, column=0, sticky=W)
-    Label(main_window, text="Date Item is Hired From:").grid(row=6, column=0, sticky=W)
-    Label(main_window, text="Date Item will be Returned:").grid(row=7, column=0, sticky=W)
-    cal = DateEntry(main_window, width=12, background='darkblue', foreground='white', borderwidth=2)
-
-    # start main loop ----------------------------------------------------------
-    main_window.mainloop() 
+# quit function ----------------------------------------------------------------
+def quit():
+    main_window.destroy()  
 
 # calculate main function ------------------------------------------------------
 def calculate():
@@ -60,7 +43,10 @@ def calculate():
     try:
         int(receipt_number.get())  
     except ValueError:
-        error_print_list.append("receipt number")
+        if receipt_number.get() == "":
+            error_print_list.append("receipt number")
+        else:
+            error_print_list.append("receipt number (must be a number)")
 
     # item hired ---------------------------------------------------------------
     if item_hired.get() == "":
@@ -80,6 +66,23 @@ def calculate():
     # print error --------------------------------------------------------------
     if first_name.get() == "" or last_name.get() == "" or receipt_number.get() == "" or item_hired.get() == "" or number_hired.get() == "":
         showerror("Error", f"Please fill in all fields: {', '.join(error_print_list)}")
+
+# main function ----------------------------------------------------------------
+def main():
+    # create buttons and labels ------------------------------------------------
+    Button(main_window, text="Quit", command=quit, width=55).grid(row=0, column=0, columnspan=2)
+    Button(main_window, text="Calculate", command=calculate, width=55, pady=5).grid(row=8, column=0, columnspan=2)
+    Label(main_window, text="First Name:").grid(row=1, column=0, sticky=W)
+    Label(main_window, text="Last Name:").grid(row=2, column=0, sticky=W)
+    Label(main_window, text="Receipt number:").grid(row=3, column=0, sticky=W)
+    Label(main_window, text="Item Hired:").grid(row=4, column=0, sticky=W)
+    Label(main_window, text="Number Hired:").grid(row=5, column=0, sticky=W)
+    Label(main_window, text="Date Item is Hired From:").grid(row=6, column=0, sticky=W)
+    Label(main_window, text="Date Item will be Returned:").grid(row=7, column=0, sticky=W)
+    cal = DateEntry(main_window, width=12, background='darkblue', foreground='white', borderwidth=2)
+
+    # start main loop ----------------------------------------------------------
+    main_window.mainloop() 
 
 # create main window -----------------------------------------------------------
 main_window = Tk()
