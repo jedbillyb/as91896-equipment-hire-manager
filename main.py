@@ -1,7 +1,7 @@
 # import modules ---------------------------------------------------------------
 from concurrent.interpreters import create
 from tkinter import *
-from tkinter.messagebox import showerror
+from tkinter.messagebox import showerror, showinfo
 from tkcalendar import Calendar, DateEntry\
 
 # create lists to store data ---------------------------------------------------
@@ -83,7 +83,8 @@ def add():
     # print error --------------------------------------------------------------
     if first_name.get() == "" or last_name.get() == "" or receipt_number.get() == "" or item_hired.get() == "" or number_hired.get() == "":
         showerror("Error", f"Please fill in all fields: {', '.join(error_print_list)}")
-
+    else:
+         clear_fields()
 def delete():
     try:
         target = int(receipt_number.get())
@@ -102,10 +103,12 @@ def delete():
     if found:
         database_list.remove(found)
         print(f"Deleted receipt {target}")
+        clear_fields()
         print(database_list)
+        showinfo("Deleted", f"Receipt {target} has been deleted")
     else:
         showerror("Not found", f"Receipt {target} not found") 
-   
+        clear_fields()
 # main function ----------------------------------------------------------------
 def main():
     # create buttons and labels ------------------------------------------------
