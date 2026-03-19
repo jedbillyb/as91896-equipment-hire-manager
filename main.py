@@ -1,6 +1,7 @@
 # import modules ---------------------------------------------------------------
 from concurrent.interpreters import create
 from tkinter import *
+from tkinter import ttk
 from tkinter.messagebox import showerror, showinfo
 from tkcalendar import Calendar, DateEntry\
 
@@ -20,15 +21,29 @@ database_list = []
 def quit():
     main_window.destroy()  
 
-def clear_fields():
+def table_setup():
+    table = ttk.Treeview(main_window, columns=("id", "first", "last", "receipt", "item", "qty", "from", "to"), show="headings")
+    table.heading("id", text="#")
+    table.heading("first", text="First Name")
+    table.heading("last", text="Last Name")
+    table.heading("receipt", text="Receipt No")
+    table.heading("item", text="Item")
+    table.heading("qty", text="Qty")
+    table.heading("from", text="Date From")
+    table.heading("to", text="Date To")
+    table.grid(row=10, column=0, columnspan=2, padx=10, pady=10)
+
+
+def clear_fields(table):
     first_name.delete(0, END)
     last_name.delete(0, END)
     receipt_number.delete(0, END)
     item_hired.delete(0, END)
     number_hired.delete(0, END)
+    refresh_table()
 
 # calculate main function ------------------------------------------------------
-def add():
+def add(table):
     row = 1
 
     # create error list, also used to clear error list for next time -----------
@@ -71,14 +86,25 @@ def add():
         "id":         row,
         "first_name": first_name.get(),
         "last_name":  last_name.get(),
-        "receipt_no": int(receipt_number.get()),
+        "receipt_no": receipt_number.get(),
         "item":       item_hired.get(),
-        "quantity":   int(number_hired.get()),
+        "quantity":   number_hired.get(),
         "date_from":  calendar.get_date(),
         "date_to":    calendar2.get_date(),
     }
     database_list.append(record)
     print(database_list)
+
+    table.insert("", END, values=(
+        len(database_list),
+        first_name.get(),
+        last_name.get(),
+        receipt_number.get(),
+        item_hired.get(),
+        number_hired.get(),
+        calendar.get_date(),
+        calendar2.get_date()
+    ))
 
     # print error --------------------------------------------------------------
     if first_name.get() == "" or last_name.get() == "" or receipt_number.get() == "" or item_hired.get() == "" or number_hired.get() == "":
@@ -106,9 +132,25 @@ def delete():
         clear_fields()
         print(database_list)
         showinfo("Deleted", f"Receipt {target} has been deleted")
+        refresh_table()
     else:
         showerror("Not found", f"Receipt {target} not found") 
         clear_fields()
+
+def refresh_table(table):
+    table.delete(*table.get_children())  # clear all rows
+    for i, record in enumerate(database_list, 1):
+        table.insert("", END, values=(
+            i,
+            record["first_name"],
+            record["last_name"],
+            record["receipt_no"],
+            record["item"],
+            record["quantity"],
+            record["date_from"],
+            record["date_to"]
+        ))
+
 # main function ----------------------------------------------------------------
 def main():
     # create buttons and labels ------------------------------------------------
@@ -130,6 +172,8 @@ def main():
 
 # create main window -----------------------------------------------------------
 main_window = Tk()
+
+table_setup()
 
 # create entry boxes -----------------------------------------------------------
 first_name = Entry(main_window)
