@@ -20,6 +20,13 @@ database_list = []
 def quit():
     main_window.destroy()  
 
+def clear_fields():
+    first_name.delete(0, END)
+    last_name.delete(0, END)
+    receipt_number.delete(0, END)
+    item_hired.delete(0, END)
+    number_hired.delete(0, END)
+
 # calculate main function ------------------------------------------------------
 def add():
     row = 1
@@ -102,6 +109,7 @@ def delete():
 # main function ----------------------------------------------------------------
 def main():
     # create buttons and labels ------------------------------------------------
+    Button(main_window, text="Clear", command=clear_fields, width=20, pady=5).grid(row=9, column=0, columnspan=2)
     Button(main_window, text="Quit", command=quit, width=40).grid(row=0, column=0, columnspan=2)
     Button(main_window, text="Add", command=add, width=20, pady=5).grid(row=8, column=0)
     Button(main_window, text="Delete", command=delete, width=20, pady=5).grid(row=8, column=1)
