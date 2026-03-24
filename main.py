@@ -19,7 +19,7 @@ database_list = []
 
 # quit function ----------------------------------------------------------------
 def quit():
-    top_frame.destroy()  
+    main_window.destroy()
 
 def table_setup():
     global table
