@@ -19,10 +19,17 @@ database_list = []
 
 # quit function ----------------------------------------------------------------
 def quit():
-    main_window.destroy()  
+    top_frame.destroy()  
 
 def table_setup():
-    table = ttk.Treeview(main_window, columns=("id", "first", "last", "receipt", "item", "qty", "from", "to"), show="headings")
+    global table
+
+    table = ttk.Treeview(
+        bottom_frame,
+        columns=("id", "first", "last", "receipt", "item", "qty", "from", "to"),
+        show="headings"
+    )
+
     table.heading("id", text="#")
     table.heading("first", text="First Name")
     table.heading("last", text="Last Name")
@@ -31,7 +38,8 @@ def table_setup():
     table.heading("qty", text="Qty")
     table.heading("from", text="Date From")
     table.heading("to", text="Date To")
-    table.grid(row=10, column=0, columnspan=2, padx=10, pady=10)
+
+    table.pack()
 
 
 def clear_fields(table):
@@ -43,7 +51,7 @@ def clear_fields(table):
     refresh_table()
 
 # calculate main function ------------------------------------------------------
-def add(table):
+def add():
     row = 1
 
     # create error list, also used to clear error list for next time -----------
@@ -94,23 +102,25 @@ def add(table):
     }
     database_list.append(record)
     print(database_list)
-
-    table.insert("", END, values=(
-        len(database_list),
-        first_name.get(),
-        last_name.get(),
-        receipt_number.get(),
-        item_hired.get(),
-        number_hired.get(),
-        calendar.get_date(),
-        calendar2.get_date()
-    ))
-
-    # print error --------------------------------------------------------------
-    if first_name.get() == "" or last_name.get() == "" or receipt_number.get() == "" or item_hired.get() == "" or number_hired.get() == "":
-        showerror("Error", f"Please fill in all fields: {', '.join(error_print_list)}")
+    print("1", error_print_list)
+    
+    if error_print_list == "":
+        table.insert("", END, values=(
+            len(database_list),
+            first_name.get(),
+            last_name.get(),
+            receipt_number.get(),
+            item_hired.get(),
+            number_hired.get(),
+            calendar.get_date(),
+            calendar2.get_date()
+        ))
     else:
-         clear_fields()
+        if first_name.get() == "" or last_name.get() == "" or receipt_number.get() == "" or item_hired.get() == "" or number_hired.get() == "":
+            showerror("Error", f"Please fill in all fields: {', '.join(error_print_list)}")
+        else:
+            clear_fields()
+    
 def delete():
     try:
         target = int(receipt_number.get())
@@ -154,41 +164,46 @@ def refresh_table(table):
 # main function ----------------------------------------------------------------
 def main():
     # create buttons and labels ------------------------------------------------
-    Button(main_window, text="Clear", command=clear_fields, width=20, pady=5).grid(row=9, column=0, columnspan=2)
-    Button(main_window, text="Quit", command=quit, width=40).grid(row=0, column=0, columnspan=2)
-    Button(main_window, text="Add", command=add, width=20, pady=5).grid(row=8, column=0)
-    Button(main_window, text="Delete", command=delete, width=20, pady=5).grid(row=8, column=1)
-    Label(main_window, text="First Name:").grid(row=1, column=0, sticky=W)
-    Label(main_window, text="Last Name:").grid(row=2, column=0, sticky=W)
-    Label(main_window, text="Receipt number:").grid(row=3, column=0, sticky=W)
-    Label(main_window, text="Item Hired:").grid(row=4, column=0, sticky=W)
-    Label(main_window, text="Number Hired:").grid(row=5, column=0, sticky=W)
-    Label(main_window, text="Date Item is Hired From:").grid(row=6, column=0, sticky=W)
-    Label(main_window, text="Date Item will be Returned:").grid(row=7, column=0, sticky=W)
-    cal = DateEntry(main_window, width=12, background='darkblue', foreground='white', borderwidth=2)
+    Button(top_frame, text="Clear", command=clear_fields, width=20, pady=5).grid(row=9, column=0, columnspan=2)
+    Button(top_frame, text="Quit", command=quit, width=40).grid(row=0, column=0, columnspan=2)
+    Button(top_frame, text="Add", command=add, width=20, pady=5).grid(row=8, column=0)
+    Button(top_frame, text="Delete", command=delete, width=20, pady=5).grid(row=8, column=1)
+    Label(top_frame, text="First Name:").grid(row=1, column=0, sticky=W)
+    Label(top_frame, text="Last Name:").grid(row=2, column=0, sticky=W)
+    Label(top_frame, text="Receipt number:").grid(row=3, column=0, sticky=W)
+    Label(top_frame, text="Item Hired:").grid(row=4, column=0, sticky=W)
+    Label(top_frame, text="Number Hired:").grid(row=5, column=0, sticky=W)
+    Label(top_frame, text="Date Item is Hired From:").grid(row=6, column=0, sticky=W)
+    Label(top_frame, text="Date Item will be Returned:").grid(row=7, column=0, sticky=W)
+    cal = DateEntry(top_frame, width=12, background='darkblue', foreground='white', borderwidth=2)
 
     # start main loop ----------------------------------------------------------
-    main_window.mainloop() 
+    top_frame.mainloop() 
 
 # create main window -----------------------------------------------------------
 main_window = Tk()
+top_frame = Frame(main_window)
+top_frame.grid(row=0, column=0, sticky=W)
+
+bottom_frame = Frame(main_window)
+bottom_frame.grid(row=1, column=0)
 
 table_setup()
 
 # create entry boxes -----------------------------------------------------------
-first_name = Entry(main_window)
-last_name = Entry(main_window)
-receipt_number = Entry(main_window)
-item_hired = Entry(main_window)
-number_hired = Entry(main_window)
-day_hired_from = Entry(main_window)
-month_hired_from = Entry(main_window)
-year_hired_from = Entry(main_window)
-calendar = DateEntry(main_window, width=18, pady=5, background='darkblue', foreground='white', borderwidth=2)
-calendar2 = DateEntry(main_window, width=18, pady=5, background='darkblue', foreground='white', borderwidth=2)
+first_name = Entry(top_frame)
+last_name = Entry(top_frame)
+receipt_number = Entry(top_frame)
+item_hired = Entry(top_frame)
+number_hired = Entry(top_frame)
+day_hired_from = Entry(top_frame)
+month_hired_from = Entry(top_frame)
+year_hired_from = Entry(top_frame)
+calendar = DateEntry(top_frame, width=18, pady=5, background='darkblue', foreground='white', borderwidth=2)
+calendar2 = DateEntry(top_frame, width=18, pady=5, background='darkblue', foreground='white', borderwidth=2)
 
 # grid entry boxes ------------------------------------------------------------
-date_returned = Entry(main_window)
+date_returned = Entry(top_frame)
 first_name.grid(row=1, column=1, padx=10, pady=5)
 last_name.grid(row=2, column=1, padx=10, pady=5)
 receipt_number.grid(row=3, column=1, padx=10, pady=5)
