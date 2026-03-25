@@ -122,35 +122,37 @@ def add():
         showerror("Error", f"Please fill in: {', '.join(error_print_list)}")
     
 def delete():
-    try:
-        target = int(receipt_number.get())
-    except ValueError:
-        showerror("Error", "Enter a valid receipt number to delete")
-
+    if row_id.get() == "":
+        showerror("Error", "Enter a row number to delete")
+    else:
+        try:
+            target = int(row_id.get())
+        except ValueError:
+            showerror("Error", "Row number must be a number")
 
     # find the record
     found = None
     for record in database_list:
-        if record["receipt_no"] == target:
+        if record["id"] == target:
             found = record
             break  # stop searching once we find it
 
     # remove it, or show error
     if found:
         database_list.remove(found)
-        print(f"Deleted receipt {target}")
+        print(f"Deleted row {target}")
         clear_fields(table)
         print(database_list)
-        showinfo("Deleted", f"Receipt {target} has been deleted")
+        showinfo("Deleted", f"Row {target} has been deleted")
         refresh_table(table)
     else:
-        showerror("Not found", f"Receipt {target} not found") 
+        showerror("Not found", f"Row {target} not found") 
         clear_fields(table)
 
 # main function ----------------------------------------------------------------
 def main():
     # create buttons and labels ------------------------------------------------
-    Button(top_frame, text="Clear", command=lambda: clear_fields(table), width=20, pady=5).grid(row=9, column=0, columnspan=2)
+    Button(top_frame, text="Clear", command=lambda: clear_fields(table), width=20, pady=5).grid(row=9, column=0)
     Button(top_frame, text="Quit", command=quit, width=40).grid(row=0, column=0, columnspan=2)
     Button(top_frame, text="Add", command=add, width=20, pady=5).grid(row=8, column=0)
     Button(top_frame, text="Delete", command=delete, width=20, pady=5).grid(row=8, column=1)
@@ -161,6 +163,7 @@ def main():
     Label(top_frame, text="Number Hired:").grid(row=5, column=0, sticky=W)
     Label(top_frame, text="Date Item is Hired From:").grid(row=6, column=0, sticky=W)
     Label(top_frame, text="Date Item will be Returned:").grid(row=7, column=0, sticky=W)
+    Label(top_frame, text="Row #:").grid(row=9, column=1, sticky=W)
     cal = DateEntry(top_frame, width=12, background='darkblue', foreground='white', borderwidth=2)
 
     # start main loop ----------------------------------------------------------
@@ -187,6 +190,7 @@ month_hired_from = Entry(top_frame)
 year_hired_from = Entry(top_frame)
 calendar = DateEntry(top_frame, width=18, pady=5, background='darkblue', foreground='white', borderwidth=2)
 calendar2 = DateEntry(top_frame, width=18, pady=5, background='darkblue', foreground='white', borderwidth=2)
+row_id = Entry(top_frame)
 
 # grid entry boxes ------------------------------------------------------------
 date_returned = Entry(top_frame)
@@ -197,6 +201,8 @@ item_hired.grid(row=4, column=1, padx=10, pady=5)
 number_hired.grid(row=5, column=1, padx=10, pady=5)
 calendar.grid(row=6, column=1, padx=10, pady=5, sticky=W)   
 calendar2.grid(row=7, column=1, padx=10, pady=5, sticky=W)
+row_id.config(width=10)
+row_id.grid(row=9, column=1, padx=10, pady=5, sticky=E)
 
 # main loop --------------------------------------------------------------------
 main()
