@@ -3,7 +3,8 @@ from concurrent.interpreters import create
 from tkinter import *
 from tkinter import ttk
 from tkinter.messagebox import showerror, showinfo
-from tkcalendar import Calendar, DateEntry\
+from tkcalendar import Calendar, DateEntry
+from datetime import date
 
 # create lists to store data ---------------------------------------------------
 first_name_list = []
@@ -104,6 +105,11 @@ def add():
     except ValueError:
         error_print_list.append("number hired")
     
+    if calendar.get_date() > date.today():
+        error_print_list.append("date from (cannot be in the future)")
+    if calendar2.get_date() < date.today():
+        error_print_list.append("date to (cannot be in the past)")
+
     if not error_print_list:        
         record = {
             "id":         row,
