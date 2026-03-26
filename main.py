@@ -7,15 +7,6 @@ from tkcalendar import Calendar, DateEntry
 from datetime import date
 
 # create lists to store data ---------------------------------------------------
-first_name_list = []
-last_name_list = []
-receipt_number_list = []
-item_hired_list = []
-number_hired_list = []
-day_hired_from_list = []
-month_hired_from_list = []
-year_hired_from_list = []
-date_returned_list = []
 database_list = []
 
 # quit function ----------------------------------------------------------------
@@ -67,21 +58,21 @@ def clear_fields(table):
 
 # calculate main function ------------------------------------------------------
 def add():
-    row = 1
-
     # create error list, also used to clear error list for next time -----------
     error_print_list = []
 
     # first name ---------------------------------------------------------------
     if first_name.get() == "":
         error_print_list.append("first name")
+    elif not first_name.get().replace(" ", "").isalpha():
+        error_print_list.append("first name (must be letters only)")
 
     # last name ----------------------------------------------------------------
     if last_name.get() == "":
         error_print_list.append("last name")
-    else:
-        last_name_list.append(last_name.get())
-
+    elif not last_name.get().replace(" ", "").isalpha():
+        error_print_list.append("last name (must be letters only)")
+        
     # receipt number -----------------------------------------------------------
     try:
         int(receipt_number.get())  
@@ -94,17 +85,20 @@ def add():
     # item hired ---------------------------------------------------------------
     if item_hired.get() == "":
         error_print_list.append("item hired")
-    else:
-        item_hired_list.append(item_hired.get())
+    elif not item_hired.get().replace(" ", "").isalpha():
+        error_print_list.append("item hired (must be letters only)")
 
     # number hired -------------------------------------------------------------
-    try:
-        value = int(number_hired.get())
-        if not 1 <= value <= 500:
-            error_print_list.append("number hired (must be 1–500)")
-    except ValueError:
-        error_print_list.append("number hired")
-    
+    if number_hired.get() == "":
+        error_print_list.append("number hired (cannot be blank)")
+    else:
+        try:
+            value = int(number_hired.get())
+            if not 1 <= value <= 500:
+                error_print_list.append("number hired (must be 1–500)")
+        except ValueError:
+            error_print_list.append("number hired (must be a number)")
+        
     if calendar.get_date() > date.today():
         error_print_list.append("date from (cannot be in the future)")
     if calendar2.get_date() < date.today():
@@ -112,7 +106,7 @@ def add():
 
     if not error_print_list:        
         record = {
-            "id":         row,
+            "id":         len(database_list) + 1,
             "first_name": first_name.get(),
             "last_name":  last_name.get(),
             "receipt_no": receipt_number.get(),
