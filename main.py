@@ -55,6 +55,7 @@ def clear_fields(table):
     receipt_number.delete(0, END)
     item_hired.delete(0, END)
     number_hired.delete(0, END)
+    row_id.delete(0, END)
 
     refresh_table(table)
 
@@ -134,9 +135,9 @@ def delete():
 
         if 1 <= target <= len(database_list):
             database_list.pop(target - 1)
+            clear_fields(table)
             print(f"Deleted row {target}")
             showinfo("Deleted", f"Row {target} has been deleted")
-            clear_fields(table)
         else:
             showerror("Not found", f"Row {target} not found")
             clear_fields(table)
