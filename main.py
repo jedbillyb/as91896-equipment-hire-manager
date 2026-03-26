@@ -1,4 +1,4 @@
-# import modules ---------------------------------------------------------------
+# import modules 
 from concurrent.interpreters import create
 from tkinter import *
 from tkinter import ttk
@@ -6,13 +6,14 @@ from tkinter.messagebox import showerror, showinfo
 from tkcalendar import Calendar, DateEntry
 from datetime import date
 
-# create lists to store data ---------------------------------------------------
+# database for the hire records
 database_list = []
 
-# quit function ----------------------------------------------------------------
+# close the window and quit the program function
 def quit():
     main_window.destroy()
 
+# clear and refresh the data with latest data
 def refresh_table(table):
     table.delete(*table.get_children())  # clear all rows
     for i, record in enumerate(database_list, 1):
@@ -27,6 +28,7 @@ def refresh_table(table):
             record["date_to"]
         ))
 
+# set up the table columns and headings
 def table_setup():
     global table
 
@@ -47,33 +49,30 @@ def table_setup():
 
     table.pack()
 
-
+# clear all fields and refresh the table with latest data
 def clear_fields(table):
     first_name.delete(0, END)
     last_name.delete(0, END)
     receipt_number.delete(0, END)
     item_hired.delete(0, END)
     number_hired.delete(0, END)
+
     refresh_table(table)
 
-# calculate main function ------------------------------------------------------
+#  validate inputs and add a new hire record
 def add():
-    # create error list, also used to clear error list for next time -----------
     error_print_list = []
 
-    # first name ---------------------------------------------------------------
     if first_name.get() == "":
         error_print_list.append("first name")
     elif not first_name.get().replace(" ", "").isalpha():
         error_print_list.append("first name (must be letters only)")
 
-    # last name ----------------------------------------------------------------
     if last_name.get() == "":
         error_print_list.append("last name")
     elif not last_name.get().replace(" ", "").isalpha():
         error_print_list.append("last name (must be letters only)")
         
-    # receipt number -----------------------------------------------------------
     try:
         int(receipt_number.get())  
     except ValueError:
@@ -82,13 +81,11 @@ def add():
         else:
             error_print_list.append("receipt number (must be a number)")
 
-    # item hired ---------------------------------------------------------------
     if item_hired.get() == "":
         error_print_list.append("item hired")
     elif not item_hired.get().replace(" ", "").isalpha():
         error_print_list.append("item hired (must be letters only)")
 
-    # number hired -------------------------------------------------------------
     if number_hired.get() == "":
         error_print_list.append("number hired (cannot be blank)")
     else:
@@ -101,6 +98,7 @@ def add():
         
     if calendar.get_date() > date.today():
         error_print_list.append("date from (cannot be in the future)")
+
     if calendar2.get_date() < date.today():
         error_print_list.append("date to (cannot be in the past)")
 
@@ -121,6 +119,7 @@ def add():
     else:
         showerror("Error", f"Please fill in: {', '.join(error_print_list)}")
     
+# delete a hire record by row number
 def delete():
     if row_id.get() == "":
         showerror("Error", "Enter a row number to delete")
@@ -134,14 +133,12 @@ def delete():
             showerror("Error", "Row number must be a number")
             return
 
-        # find the record
         found = None
         for record in database_list:
             if record["id"] == target:
                 found = record
-                break  # stop searching once we find it
+                break
 
-        # remove it, or show error
         if found:
             database_list.remove(found)
             print(f"Deleted row {target}")
@@ -153,13 +150,13 @@ def delete():
             showerror("Not found", f"Row {target} not found") 
             clear_fields(table)
 
-# main function ----------------------------------------------------------------
+# build the GUI layout and start the main loop
 def main():
-    # create buttons and labels ------------------------------------------------
     Button(top_frame, text="Clear", command=lambda: clear_fields(table), width=20, pady=5).grid(row=9, column=0)
     Button(top_frame, text="Quit", command=quit, width=40).grid(row=0, column=0, columnspan=2)
     Button(top_frame, text="Add", command=add, width=20, pady=5).grid(row=8, column=0)
     Button(top_frame, text="Delete", command=delete, width=20, pady=5).grid(row=8, column=1)
+
     Label(top_frame, text="First Name:").grid(row=1, column=0, sticky=W)
     Label(top_frame, text="Last Name:").grid(row=2, column=0, sticky=W)
     Label(top_frame, text="Receipt number:").grid(row=3, column=0, sticky=W)
@@ -168,12 +165,11 @@ def main():
     Label(top_frame, text="Date Item is Hired From:").grid(row=6, column=0, sticky=W)
     Label(top_frame, text="Date Item will be Returned:").grid(row=7, column=0, sticky=W)
     Label(top_frame, text="Row #:").grid(row=9, column=1, sticky=W)
+
     cal = DateEntry(top_frame, width=12, background='darkblue', foreground='white', borderwidth=2)
 
-    # start main loop ----------------------------------------------------------
     top_frame.mainloop() 
 
-# create main window -----------------------------------------------------------
 main_window = Tk()
 top_frame = Frame(main_window)
 top_frame.grid(row=0, column=0, sticky=W)
@@ -183,7 +179,6 @@ bottom_frame.grid(row=1, column=0)
 
 table_setup()
 
-# create entry boxes -----------------------------------------------------------
 first_name = Entry(top_frame)
 last_name = Entry(top_frame)
 receipt_number = Entry(top_frame)
@@ -196,7 +191,6 @@ calendar = DateEntry(top_frame, width=18, pady=5, background='darkblue', foregro
 calendar2 = DateEntry(top_frame, width=18, pady=5, background='darkblue', foreground='white', borderwidth=2)
 row_id = Entry(top_frame)
 
-# grid entry boxes ------------------------------------------------------------
 date_returned = Entry(top_frame)
 first_name.grid(row=1, column=1, padx=10, pady=5)
 last_name.grid(row=2, column=1, padx=10, pady=5)
@@ -208,5 +202,4 @@ calendar2.grid(row=7, column=1, padx=10, pady=5, sticky=W)
 row_id.config(width=10)
 row_id.grid(row=9, column=1, padx=10, pady=5, sticky=E)
 
-# main loop --------------------------------------------------------------------
 main()
