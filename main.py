@@ -99,11 +99,8 @@ def add():
         except ValueError:
             error_print_list.append("number hired (must be a number)")
         
-    if calendar.get_date() > date.today():
-        error_print_list.append("date from (cannot be in the future)")
-
-    if calendar2.get_date() < date.today():
-        error_print_list.append("date to (cannot be in the past)")
+    if calendar2.get_date() < calendar.get_date():
+        error_print_list.append("return date (must be on or after hire date)")
 
     if not error_print_list:        
         record = {
