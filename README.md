@@ -42,5 +42,5 @@ python main.py
 ## license
 [MIT](LICENSE)
 
-#
+---
 Made with ❤️ by [jedbillyb](https://github.com/jedbillyb)
