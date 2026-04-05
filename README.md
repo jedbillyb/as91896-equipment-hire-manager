@@ -1,5 +1,5 @@
 # as91896-equipment-hire-manager
-NCEA AS91896 — tkinter GUI app for managing equipment hire records.
+NCEA AS91896 - tkinter GUI app for managing equipment hire records.
 
 ## what it does
 A desktop app for tracking equipment hire. You can add and delete hire records, with each record storing customer details, the item hired, quantity, and hire dates. Built with Python and tkinter for NCEA Level 2 Digital Technologies.
