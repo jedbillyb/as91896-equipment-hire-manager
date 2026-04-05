@@ -8,12 +8,13 @@ from tkinter import *
 from tkinter import ttk
 from tkinter.messagebox import showerror
 from tkcalendar import DateEntry
-from datetime import date
 
 # ////////////////
-# Global database list to store all hire records
+# Global database list to store all hire records, and constants for minimum and maximum items that can be hired
 # ////////////////
 database_list = []
+MIN_ITEMS = 1
+MAX_ITEMS = 500
 
 # Subroutine to close the main window and exit the program
 def quit_app():
@@ -108,14 +109,14 @@ def add():
     elif not item_hired.get().replace(" ", "").isalpha():
         error_print_list.append("item hired (must be letters only)")
 
-    # Validate number hired - must not be blank, must be a number, and must be between 1 and 500
+    # Validate number hired - must not be blank, must be a number, and must be between MIN_ITEMS and MAX_ITEMS
     if number_hired.get() == "":
         error_print_list.append("number hired (cannot be blank)")
     else:
         try:
             value = int(number_hired.get())
-            if not 1 <= value <= 500:
-                error_print_list.append("number hired (must be 1–500)")
+            if not MIN_ITEMS <= value <= MAX_ITEMS:
+                error_print_list.append(f"number hired (must be {MIN_ITEMS}–{MAX_ITEMS})")
         except ValueError:
             error_print_list.append("number hired (must be a number)")
 
